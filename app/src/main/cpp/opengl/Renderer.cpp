@@ -9,7 +9,7 @@ Renderer::Renderer()
 void Renderer::onSurfaceCreated()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    m_player = new md2model::Md2((char *)"data/female.md2", (char *)"data/female.tga");
+    m_player = std::make_unique<md2model::Md2>("data/female.md2", "data/female.tga");
 
     // Create the projection matrix
     assert(m_height != 0);

@@ -5,6 +5,7 @@
 #include <GLES2/gl2ext.h>
 #include <math.h>
 #include "glm/glm.hpp"
+#include <memory>
 
 namespace md2model
 {
@@ -29,7 +30,7 @@ public:
 private:
     GLuint loadShader(GLuint shaderType, const char *shaderSource);
 
-    md2model::Md2 *m_player = nullptr;
+    std::unique_ptr<md2model::Md2> m_player;
     glm::mat4 m_view;
     glm::mat4 m_projection;
     glm::vec3 m_camPos;
