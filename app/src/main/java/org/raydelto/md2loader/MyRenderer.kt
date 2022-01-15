@@ -8,9 +8,9 @@ class MyRenderer : GLSurfaceView.Renderer {
     // Native functions
     private external fun drawFrame()
     private external fun surfaceCreated()
-    external fun setScreenSize(width:Int, height: Int)
-    external fun setRotationAngles(x:Float, y:Float)
-    external fun setScale(scale:Float)
+    external fun setScreenSize(width: Int, height: Int)
+    external fun setRotationAngles(x: Float, y: Float)
+    external fun setScale(scale: Float)
 
     override fun onDrawFrame(gl: GL10?) {
         drawFrame()

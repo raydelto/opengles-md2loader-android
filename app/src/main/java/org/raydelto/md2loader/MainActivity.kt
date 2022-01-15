@@ -15,18 +15,19 @@ import java.io.RandomAccessFile
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var glSurfaceView : GLSurfaceView
+    private lateinit var glSurfaceView: GLSurfaceView
 
     private var assetsDirectory: String? = null
 
     private val TAG = "MyActivity"
 
     private var mVelocityTracker: VelocityTracker? = null
+    
     private var renderer: MyRenderer? = null
 
     private var mScaleFactor = 1f
 
-    private var mScaleDetector : ScaleGestureDetector? = null
+    private var mScaleDetector: ScaleGestureDetector? = null
 
     private val scaleListener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
@@ -44,8 +45,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.pointerCount > 1)
-        {
+        if (event.pointerCount > 1) {
             mScaleDetector?.onTouchEvent(event)
             return true
         }
@@ -69,10 +69,6 @@ class MainActivity : AppCompatActivity() {
                     // computeCurrentVelocity(). Then call getXVelocity()
                     // and getYVelocity() to retrieve the velocity for each pointer ID.
                     computeCurrentVelocity(2)
-                    // Log velocity of pixels per second
-                    // Best practice to use VelocityTrackerCompat where possible.
-                    Log.e(TAG, "X velocity: ${getXVelocity(pointerId)}")
-                    Log.e(TAG, "Y velocity: ${getYVelocity(pointerId)}")
                     renderer?.setRotationAngles(getXVelocity(pointerId), getYVelocity(pointerId))
                 }
             }
@@ -93,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         glSurfaceView = findViewById<GLSurfaceView>(R.id.glSurfaceView)
         glSurfaceView.setEGLContextClientVersion(2)
 
-        assetsDirectory = applicationContext.filesDir.path+"/"
+        assetsDirectory = applicationContext.filesDir.path + "/"
 
         extractAsset("female.md2")
         extractAsset("female.tga")
@@ -130,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Failure in extractAssets():  $e  \n $assetsDirectory  $assetName")
             }
             if (file.exists()) {
-                Log.d(TAG,"File extracted successfully")
+                Log.d(TAG, "File extracted successfully")
             }
         }
     }
@@ -144,6 +140,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         glSurfaceView.onResume()
     }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) hideSystemUI()
