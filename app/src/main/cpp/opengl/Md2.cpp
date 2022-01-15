@@ -147,7 +147,7 @@ void Md2::LoadModel(char *md2FileName)
 
 	frame *fra;
 	md2model::vector *pntlst;
-	mesh *triIndex, *bufIndexPtr;
+	mesh *bufIndexPtr;
 
 	fp = fopen(md2FileName, "rb");
 	fseek(fp, 0, SEEK_END);
@@ -183,12 +183,11 @@ void Md2::LoadModel(char *md2FileName)
 
 	for (size_t count = 0; count < head->tNum; count++)
 	{
-		m_model->st[count].s = (float)stPtr[count].s / (float)head->twidth;
-		m_model->st[count].t = (float)stPtr[count].t / (float)head->theight;
+		m_model->st[count].s = static_cast<float>(stPtr[count].s) / static_cast<float>(head->twidth);
+		m_model->st[count].t = static_cast<float>(stPtr[count].t) / static_cast<float>(head->theight);
 	}
 
-	triIndex = (mesh *)malloc(sizeof(mesh) * head->fNum);
-	m_model->triIndx = triIndex;
+	m_model->triIndx = (mesh *)malloc(sizeof(mesh) * head->fNum);
 	m_model->numTriangles = head->fNum;
 	bufIndexPtr = (mesh *)&buffer[head->offsetIndx];
 
@@ -196,13 +195,13 @@ void Md2::LoadModel(char *md2FileName)
 	{
 		for (size_t count2 = 0; count2 < head->fNum; count2++)
 		{
-			triIndex[count2].meshIndex[0] = bufIndexPtr[count2].meshIndex[0];
-			triIndex[count2].meshIndex[1] = bufIndexPtr[count2].meshIndex[1];
-			triIndex[count2].meshIndex[2] = bufIndexPtr[count2].meshIndex[2];
+			m_model->triIndx[count2].meshIndex[0] = bufIndexPtr[count2].meshIndex[0];
+			m_model->triIndx[count2].meshIndex[1] = bufIndexPtr[count2].meshIndex[1];
+			m_model->triIndx[count2].meshIndex[2] = bufIndexPtr[count2].meshIndex[2];
 
-			triIndex[count2].stIndex[0] = bufIndexPtr[count2].stIndex[0];
-			triIndex[count2].stIndex[1] = bufIndexPtr[count2].stIndex[1];
-			triIndex[count2].stIndex[2] = bufIndexPtr[count2].stIndex[2];
+			m_model->triIndx[count2].stIndex[0] = bufIndexPtr[count2].stIndex[0];
+			m_model->triIndx[count2].stIndex[1] = bufIndexPtr[count2].stIndex[1];
+			m_model->triIndx[count2].stIndex[2] = bufIndexPtr[count2].stIndex[2];
 		}
 	}
 
@@ -211,5 +210,6 @@ void Md2::LoadModel(char *md2FileName)
 	m_model->interpol = 0.0;
 
 	fclose(fp);
+	free(buffer);
 	m_modelLoaded = true;
 }
