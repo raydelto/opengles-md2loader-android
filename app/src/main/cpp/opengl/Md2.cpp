@@ -9,12 +9,12 @@ using namespace md2model;
 #define TEXTURE_PATH(name) BASE_ASSET_PATH name
 #define SHADER_PATH(name) BASE_ASSET_PATH name
 
-Md2::Md2(char *md2FileName, char *textureFileName) : m_texture(std::make_unique<Texture2D>()),
-													 m_shaderProgram(std::make_unique<ShaderProgram>()),
-													 m_position(glm::vec3(0.0f, 0.0f, -25.0f)),
-													 m_modelLoaded(false),
-													 m_textureLoaded(false),
-													 m_bufferInitialized(false)
+Md2::Md2(const char *md2FileName, const char *textureFileName) : m_texture(std::make_unique<Texture2D>()),
+																 m_shaderProgram(std::make_unique<ShaderProgram>()),
+																 m_position(glm::vec3(0.0f, 0.0f, -25.0f)),
+																 m_modelLoaded(false),
+																 m_textureLoaded(false),
+																 m_bufferInitialized(false)
 {
 	LoadTexture(TEXTURE_PATH("female.tga"));
 	LoadModel(TEXTURE_PATH("female.md2"));
@@ -24,7 +24,7 @@ Md2::Md2(char *md2FileName, char *textureFileName) : m_texture(std::make_unique<
 
 Md2::~Md2()
 {
-	for (int i = 0; i < m_vboIndices.size(); i++)
+	for (size_t i = 0; i < m_vboIndices.size(); i++)
 	{
 		glDeleteBuffers(1, &m_vboIndices[i]);
 	}
@@ -66,15 +66,15 @@ void Md2::InitBuffer()
 	texCoord = glGetAttribLocation(programId, "texCoord");
 
 	std::vector<float> md2Vertices;
-	int startFrame = 0;
-	int endFrame = m_model->numFrames - 1;
+	size_t startFrame = 0;
+	size_t endFrame = m_model->numFrames - 1;
 	md2model::vector *currentFrame;
 	md2model::vector *nextFrame;
 	m_model->currentFrame = startFrame;
 	m_model->interpol = 0.0f;
 
-	int vertexIndex = 0;
-	int startVertex = 0;
+	size_t vertexIndex = 0;
+	size_t startVertex = 0;
 
 	// fill buffer
 	while (m_model->currentFrame <= endFrame)
@@ -82,21 +82,21 @@ void Md2::InitBuffer()
 		currentFrame = &m_model->pointList[m_model->numPoints * m_model->currentFrame];
 		nextFrame = m_model->currentFrame == endFrame ? &m_model->pointList[m_model->numPoints * startFrame] : &m_model->pointList[m_model->numPoints * (m_model->currentFrame + 1)];
 		startVertex = vertexIndex;
-		for (int index = 0; index < m_model->numTriangles; index++)
+		for (size_t index = 0; index < m_model->numTriangles; index++)
 		{
 
 			// Start of the vertex data
-			for (int p = 0; p < 3; p++)
+			for (size_t p = 0; p < 3; p++)
 			{
 				// current frame
-				for (int j = 0; j < 3; j++)
+				for (size_t j = 0; j < 3; j++)
 				{
 					// vertices
 					md2Vertices.emplace_back(currentFrame[m_model->triIndx[index].meshIndex[p]].point[j]);
 				}
 
 				// next frame
-				for (int j = 0; j < 3; j++)
+				for (size_t j = 0; j < 3; j++)
 				{
 					// vertices
 					md2Vertices.emplace_back(nextFrame[m_model->triIndx[index].meshIndex[p]].point[j]);
@@ -113,10 +113,10 @@ void Md2::InitBuffer()
 		m_model->currentFrame++;
 	}
 
-	int frameIndex = startFrame;
+	size_t frameIndex = startFrame;
 	glGenBuffers(1, &m_vbo); // Generate an empty vertex buffer on the GPU
 
-	auto count = m_frameIndices[frameIndex].second - m_frameIndices[frameIndex].first + 1;
+	size_t count = m_frameIndices[frameIndex].second - m_frameIndices[frameIndex].first + 1;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);																											   // "bind" or set as the current buffer we are working with
 	glBufferData(GL_ARRAY_BUFFER, count * sizeof(float) * 8 * m_model->numFrames, &md2Vertices[m_frameIndices[frameIndex].first * 8], GL_STATIC_DRAW); // copy the data from CPU to GPU
 
@@ -165,11 +165,11 @@ void Md2::LoadModel(char *md2FileName)
 	m_model->numFrames = head->Number_Of_Frames;
 	m_model->frameSize = head->framesize;
 
-	for (int count = 0; count < head->Number_Of_Frames; count++)
+	for (size_t count = 0; count < head->Number_Of_Frames; count++)
 	{
 		fra = (frame *)&buffer[head->offsetFrames + head->framesize * count];
 		pntlst = (md2model::vector *)&m_model->pointList[head->vNum * count];
-		for (int count2 = 0; count2 < head->vNum; count2++)
+		for (size_t count2 = 0; count2 < head->vNum; count2++)
 		{
 			pntlst[count2].point[0] = fra->scale[0] * fra->fp[count2].v[0] + fra->translate[0];
 			pntlst[count2].point[1] = fra->scale[1] * fra->fp[count2].v[1] + fra->translate[1];
@@ -181,7 +181,7 @@ void Md2::LoadModel(char *md2FileName)
 	m_model->numST = head->tNum;
 	stPtr = (textindx *)&buffer[head->offsetTCoord];
 
-	for (int count = 0; count < head->tNum; count++)
+	for (size_t count = 0; count < head->tNum; count++)
 	{
 		m_model->st[count].s = (float)stPtr[count].s / (float)head->twidth;
 		m_model->st[count].t = (float)stPtr[count].t / (float)head->theight;
@@ -192,9 +192,9 @@ void Md2::LoadModel(char *md2FileName)
 	m_model->numTriangles = head->fNum;
 	bufIndexPtr = (mesh *)&buffer[head->offsetIndx];
 
-	for (int count = 0; count < head->Number_Of_Frames; count++)
+	for (size_t count = 0; count < head->Number_Of_Frames; count++)
 	{
-		for (int count2 = 0; count2 < head->fNum; count2++)
+		for (size_t count2 = 0; count2 < head->fNum; count2++)
 		{
 			triIndex[count2].meshIndex[0] = bufIndexPtr[count2].meshIndex[0];
 			triIndex[count2].meshIndex[1] = bufIndexPtr[count2].meshIndex[1];

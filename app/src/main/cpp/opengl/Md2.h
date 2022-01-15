@@ -101,7 +101,7 @@ namespace md2model
     class Md2
     {
     public:
-        Md2(char *md2FileName, char *textureFileName);
+        Md2(const char *md2FileName, const char *textureFileName);
         ~Md2();
         // The frame parameter start at 0
         void Draw(int frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection);
