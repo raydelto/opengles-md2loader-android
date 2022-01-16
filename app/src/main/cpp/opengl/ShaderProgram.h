@@ -17,7 +17,7 @@ namespace Raydelto::MD2Loader
 		~ShaderProgram();
 
 		bool loadShaders(const char *vsFilename, const char *fsFilename);
-		void use();
+		void use() const;
 
 		GLuint getProgram() const;
 

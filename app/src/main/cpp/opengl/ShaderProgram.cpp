@@ -32,8 +32,8 @@ bool ShaderProgram::loadShaders(const char *vsFilename, const char *fsFilename)
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-	glShaderSource(vs, 1, &vsSourcePtr, NULL);
-	glShaderSource(fs, 1, &fsSourcePtr, NULL);
+	glShaderSource(vs, 1, &vsSourcePtr, nullptr);
+	glShaderSource(fs, 1, &fsSourcePtr, nullptr);
 
 	glCompileShader(vs);
 	checkCompileErrors(vs, ShaderType::VERTEX);
@@ -78,7 +78,7 @@ string ShaderProgram::fileToString(const string &filename)
 
 		file.close();
 	}
-	catch (std::exception ex)
+	catch (std::exception &ex)
 	{
 		LOGE("Error reading shader filename!");
 	}
@@ -86,7 +86,7 @@ string ShaderProgram::fileToString(const string &filename)
 	return ss.str();
 }
 
-void ShaderProgram::use()
+void ShaderProgram::use() const
 {
 	if (mHandle > 0)
 		glUseProgram(mHandle);
@@ -107,7 +107,7 @@ void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type)
 			// The length includes the NULL character
 			string errorLog(length, ' '); // Resize and fill with space character
 			glGetProgramInfoLog(shader, length, &length, &errorLog[0]);
-			LOGE("Error! Shader program failed to link. %s lengtt %d\n", errorLog.c_str(), length);
+			LOGE("Error! Shader program failed to link. %s length %d\n", errorLog.c_str(), length);
 		}
 	}
 	else
@@ -163,7 +163,7 @@ void ShaderProgram::setUniform(const GLchar *name, const glm::mat4 &m)
 
 GLint ShaderProgram::getUniformLocation(const GLchar *name)
 {
-	std::map<string, GLint>::iterator it = mUniformLocations.find(name);
+	auto it = mUniformLocations.find(name);
 
 	// Only need to query the shader program IF it doesn't already exist.
 	if (it == mUniformLocations.end())

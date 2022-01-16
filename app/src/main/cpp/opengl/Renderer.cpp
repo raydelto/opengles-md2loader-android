@@ -3,9 +3,7 @@
 
 using namespace Raydelto::MD2Loader;
 
-Renderer::Renderer()
-{
-}
+Renderer::Renderer() = default;
 
 void Renderer::onSurfaceCreated()
 {
