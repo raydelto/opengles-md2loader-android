@@ -146,7 +146,7 @@ void MD2Model::LoadModel(const char *md2FileName)
 	textindx *stPtr;
 
 	frame *fra;
-	Raydelto::MD2Loader::vector *pntlst;
+	Raydelto::MD2Loader::vector *pointList;
 	mesh *bufIndexPtr;
 
 	fp = fopen(md2FileName, "rb");
@@ -168,12 +168,12 @@ void MD2Model::LoadModel(const char *md2FileName)
 	for (size_t count = 0; count < head->Number_Of_Frames; count++)
 	{
 		fra = (frame *)&buffer[head->offsetFrames + head->framesize * count];
-		pntlst = (Raydelto::MD2Loader::vector *)&m_model->pointList[head->vNum * count];
+		pointList = (Raydelto::MD2Loader::vector *)&m_model->pointList[head->vNum * count];
 		for (size_t count2 = 0; count2 < head->vNum; count2++)
 		{
-			pntlst[count2].point[0] = fra->scale[0] * fra->fp[count2].v[0] + fra->translate[0];
-			pntlst[count2].point[1] = fra->scale[1] * fra->fp[count2].v[1] + fra->translate[1];
-			pntlst[count2].point[2] = fra->scale[2] * fra->fp[count2].v[2] + fra->translate[2];
+			pointList[count2].point[0] = fra->scale[0] * fra->fp[count2].v[0] + fra->translate[0];
+			pointList[count2].point[1] = fra->scale[1] * fra->fp[count2].v[1] + fra->translate[1];
+			pointList[count2].point[2] = fra->scale[2] * fra->fp[count2].v[2] + fra->translate[2];
 		}
 	}
 
