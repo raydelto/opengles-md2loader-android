@@ -11,6 +11,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 import java.io.RandomAccessFile
+import kotlin.math.max
+import kotlin.math.min
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,10 +21,10 @@ class MainActivity : AppCompatActivity() {
 
     private var assetsDirectory: String? = null
 
-    private val TAG = "MyActivity"
+    private val TAG = "MainActivity"
 
     private var mVelocityTracker: VelocityTracker? = null
-    
+
     private var renderer: MyRenderer? = null
 
     private var mScaleFactor = 1f
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             mScaleFactor *= detector.scaleFactor
 
             // Don't let the object get too small or too large.
-            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f))
+            mScaleFactor = max(0.1f, min(mScaleFactor, 5.0f))
             Log.e(TAG, "scalefactor = $mScaleFactor")
             renderer?.setScale(mScaleFactor)
 
@@ -90,11 +92,11 @@ class MainActivity : AppCompatActivity() {
         glSurfaceView.setEGLContextClientVersion(2)
 
         assetsDirectory = applicationContext.filesDir.path + "/"
+        val assets: List<String> = listOf("female.md2", "female.tga", "basic.vert", "basic.frag")
 
-        extractAsset("female.md2")
-        extractAsset("female.tga")
-        extractAsset("basic.vert")
-        extractAsset("basic.frag")
+        for (asset in assets) {
+            extractAsset(asset)
+        }
 
         val metrics = resources.displayMetrics
         val height = metrics.heightPixels

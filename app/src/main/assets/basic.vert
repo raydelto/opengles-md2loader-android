@@ -12,10 +12,10 @@ uniform float interpolation;
 
 void main()
 {
-	float InterpolatedDeltaX = (nextPos.x - pos.x) * interpolation;
-	float InterpolatedDeltaY = (nextPos.y - pos.y) * interpolation;
-	float InterpolatedDeltaZ = (nextPos.z - pos.z) * interpolation;
-	vec3 interpolatedPos = vec3(pos.x + InterpolatedDeltaX, pos.y + InterpolatedDeltaY, pos.z + InterpolatedDeltaZ);
+	float interpolatedDeltaX = (nextPos.x - pos.x) * interpolation;
+	float interpolatedDeltaY = (nextPos.y - pos.y) * interpolation;
+	float interpolatedDeltaZ = (nextPos.z - pos.z) * interpolation;
+	vec3 interpolatedPos = vec3(pos.x + interpolatedDeltaX, pos.y + interpolatedDeltaY, pos.z + interpolatedDeltaZ);
 	gl_Position = projection * modelView * vec4(interpolatedPos, 1.0);
 	TexCoord = texCoord;
 }

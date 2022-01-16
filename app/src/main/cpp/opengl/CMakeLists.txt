@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 add_library( # Sets the name of the library.
-        native-lib
+        MD2Loader
 
         # Sets the library as a shared library.
         SHARED
@@ -18,7 +18,7 @@ find_library(log-lib
                 log)
 
 target_link_libraries(
-        native-lib
+        MD2Loader
         EGL
         GLESv2
         android
