@@ -23,23 +23,23 @@ class MainActivity : AppCompatActivity() {
 
     private val TAG = "MainActivity"
 
-    private var mVelocityTracker: VelocityTracker? = null
+    private var velocityTracker: VelocityTracker? = null
 
     private var renderer: MyRenderer? = null
 
-    private var mScaleFactor = 1f
+    private var scaleFactor = 1f
 
-    private var mScaleDetector: ScaleGestureDetector? = null
+    private var scaleDetector: ScaleGestureDetector? = null
 
     private val scaleListener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            mScaleFactor *= detector.scaleFactor
+            scaleFactor *= detector.scaleFactor
 
             // Don't let the object get too small or too large.
-            mScaleFactor = max(0.1f, min(mScaleFactor, 5.0f))
-            Log.e(TAG, "scalefactor = $mScaleFactor")
-            renderer?.setScale(mScaleFactor)
+            scaleFactor = max(0.1f, min(scaleFactor, 5.0f))
+            Log.e(TAG, "scalefactor = $scaleFactor")
+            renderer?.setScale(scaleFactor)
 
             return true
         }
@@ -48,23 +48,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.pointerCount > 1) {
-            mScaleDetector?.onTouchEvent(event)
+            scaleDetector?.onTouchEvent(event)
             return true
         }
 
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 // Reset the velocity tracker back to its initial state.
-                mVelocityTracker?.clear()
+                velocityTracker?.clear()
                 // If necessary retrieve a new VelocityTracker object to watch the
                 // velocity of a motion.
-                mVelocityTracker = mVelocityTracker ?: VelocityTracker.obtain()
+                velocityTracker = velocityTracker ?: VelocityTracker.obtain()
                 // Add a user's movement to the tracker.
-                mVelocityTracker?.addMovement(event)
+                velocityTracker?.addMovement(event)
                 renderer?.setRotationAngles(0.0f, 0.0f)
             }
             MotionEvent.ACTION_MOVE -> {
-                mVelocityTracker?.apply {
+                velocityTracker?.apply {
                     val pointerId: Int = event.getPointerId(event.actionIndex)
                     addMovement(event)
                     // When you want to determine the velocity, call
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity() {
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 // Return a VelocityTracker object back to be re-used by others.
-                mVelocityTracker?.recycle()
-                mVelocityTracker = null
+                velocityTracker?.recycle()
+                velocityTracker = null
                 renderer?.setRotationAngles(0.0f, 0.0f)
             }
         }
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mScaleDetector = ScaleGestureDetector(applicationContext, scaleListener)
+        scaleDetector = ScaleGestureDetector(applicationContext, scaleListener)
         setContentView(R.layout.activity_drawing)
         glSurfaceView = findViewById<GLSurfaceView>(R.id.glSurfaceView)
         glSurfaceView.setEGLContextClientVersion(2)
