@@ -59,11 +59,9 @@ void MD2Model::LoadTexture(const char *textureFileName)
 void MD2Model::InitBuffer()
 {
 	GLuint programId = m_shaderProgram->GetProgram();
-	GLuint pos, nextPos, texCoord;
-
-	pos = glGetAttribLocation(programId, "pos");
-	nextPos = glGetAttribLocation(programId, "nextPos");
-	texCoord = glGetAttribLocation(programId, "texCoord");
+	GLuint pos = glGetAttribLocation(programId, "pos");
+	GLuint nextPos = glGetAttribLocation(programId, "nextPos");
+	GLuint texCoord = glGetAttribLocation(programId, "texCoord");
 
 	std::vector<float> md2Vertices;
 	size_t startFrame = 0;
