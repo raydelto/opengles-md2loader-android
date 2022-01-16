@@ -38,7 +38,7 @@ private:
     glm::vec3 m_up;
     int m_width = 0;
     int m_height = 0;
-    int m_renderFrame = 0;
+    size_t m_renderFrame = 0;
     float m_interpolation = 0.0f;
     float m_rotationX = 0.0f;
     float m_rotationY = 0.0f;

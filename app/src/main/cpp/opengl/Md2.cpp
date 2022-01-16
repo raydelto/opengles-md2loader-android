@@ -30,7 +30,7 @@ Md2::~Md2()
 	}
 }
 
-void Md2::Draw(int frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection)
+void Md2::Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection)
 {
 	glEnable(GL_DEPTH_TEST);
 	assert(m_modelLoaded && m_textureLoaded && m_bufferInitialized);
@@ -138,7 +138,7 @@ void Md2::InitBuffer()
 void Md2::LoadModel(char *md2FileName)
 {
 	FILE *fp;
-	int length;
+	size_t length;
 
 	char *buffer;
 
