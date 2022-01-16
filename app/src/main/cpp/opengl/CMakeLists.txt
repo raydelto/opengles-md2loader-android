@@ -14,8 +14,11 @@ add_library( # Sets the name of the library.
         ShaderProgram.cpp
         Texture2D.cpp)
 
+include_directories(
+        ../third_party_libraries)
+
 find_library(log-lib
-                log)
+        log)
 
 target_link_libraries(
         MD2Loader
