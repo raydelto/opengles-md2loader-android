@@ -1,20 +1,20 @@
-#include "Md2.h"
+#include "MD2Model.h"
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 #include <jni.h>
 
-using namespace md2model;
+using namespace Raydelto::MD2Loader;
 
 #define BASE_ASSET_PATH "/data/user/0/org.raydelto.md2loader/files/"
 #define TEXTURE_PATH(name) BASE_ASSET_PATH name
 #define SHADER_PATH(name) BASE_ASSET_PATH name
 
-Md2::Md2(const char *md2FileName, const char *textureFileName) : m_texture(std::make_unique<Texture2D>()),
-																 m_shaderProgram(std::make_unique<ShaderProgram>()),
-																 m_position(glm::vec3(0.0f, 0.0f, -25.0f)),
-																 m_modelLoaded(false),
-																 m_textureLoaded(false),
-																 m_bufferInitialized(false)
+MD2Model::MD2Model(const char *md2FileName, const char *textureFileName) : m_texture(std::make_unique<Texture2D>()),
+																		   m_shaderProgram(std::make_unique<ShaderProgram>()),
+																		   m_position(glm::vec3(0.0f, 0.0f, -25.0f)),
+																		   m_modelLoaded(false),
+																		   m_textureLoaded(false),
+																		   m_bufferInitialized(false)
 {
 	LoadTexture(TEXTURE_PATH("female.tga"));
 	LoadModel(TEXTURE_PATH("female.md2"));
@@ -22,7 +22,7 @@ Md2::Md2(const char *md2FileName, const char *textureFileName) : m_texture(std::
 	InitBuffer();
 }
 
-Md2::~Md2()
+MD2Model::~MD2Model()
 {
 	for (size_t i = 0; i < m_vboIndices.size(); i++)
 	{
@@ -30,7 +30,7 @@ Md2::~Md2()
 	}
 }
 
-void Md2::Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection)
+void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection)
 {
 	glEnable(GL_DEPTH_TEST);
 	assert(m_modelLoaded && m_textureLoaded && m_bufferInitialized);
@@ -50,13 +50,13 @@ void Md2::Draw(size_t frame, float xAngle, float yAngle, float scale, float inte
 	glDrawArrays(GL_TRIANGLES, m_frameIndices[frame].first, count);
 }
 
-void Md2::LoadTexture(char *textureFileName)
+void MD2Model::LoadTexture(const char *textureFileName)
 {
 	m_texture->loadTexture(textureFileName, true);
 	m_textureLoaded = true;
 }
 
-void Md2::InitBuffer()
+void MD2Model::InitBuffer()
 {
 	GLuint programId = m_shaderProgram->getProgram();
 	GLuint pos, nextPos, texCoord;
@@ -68,8 +68,8 @@ void Md2::InitBuffer()
 	std::vector<float> md2Vertices;
 	size_t startFrame = 0;
 	size_t endFrame = m_model->numFrames - 1;
-	md2model::vector *currentFrame;
-	md2model::vector *nextFrame;
+	Raydelto::MD2Loader::vector *currentFrame;
+	Raydelto::MD2Loader::vector *nextFrame;
 	m_model->currentFrame = startFrame;
 	m_model->interpol = 0.0f;
 
@@ -135,7 +135,7 @@ void Md2::InitBuffer()
 	m_bufferInitialized = true;
 }
 
-void Md2::LoadModel(char *md2FileName)
+void MD2Model::LoadModel(const char *md2FileName)
 {
 	FILE *fp;
 	size_t length;
@@ -146,7 +146,7 @@ void Md2::LoadModel(char *md2FileName)
 	textindx *stPtr;
 
 	frame *fra;
-	md2model::vector *pntlst;
+	Raydelto::MD2Loader::vector *pntlst;
 	mesh *bufIndexPtr;
 
 	fp = fopen(md2FileName, "rb");
@@ -160,7 +160,7 @@ void Md2::LoadModel(char *md2FileName)
 	head = (header *)buffer;
 	m_model.reset((modData *)malloc(sizeof(modData)));
 
-	m_model->pointList = (md2model::vector *)malloc(sizeof(md2model::vector) * head->vNum * head->Number_Of_Frames);
+	m_model->pointList = (Raydelto::MD2Loader::vector *)malloc(sizeof(Raydelto::MD2Loader::vector) * head->vNum * head->Number_Of_Frames);
 	m_model->numPoints = head->vNum;
 	m_model->numFrames = head->Number_Of_Frames;
 	m_model->frameSize = head->framesize;
@@ -168,7 +168,7 @@ void Md2::LoadModel(char *md2FileName)
 	for (size_t count = 0; count < head->Number_Of_Frames; count++)
 	{
 		fra = (frame *)&buffer[head->offsetFrames + head->framesize * count];
-		pntlst = (md2model::vector *)&m_model->pointList[head->vNum * count];
+		pntlst = (Raydelto::MD2Loader::vector *)&m_model->pointList[head->vNum * count];
 		for (size_t count2 = 0; count2 < head->vNum; count2++)
 		{
 			pntlst[count2].point[0] = fra->scale[0] * fra->fp[count2].v[0] + fra->translate[0];

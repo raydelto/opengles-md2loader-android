@@ -12,11 +12,11 @@
 #include <map>
 #include <memory>
 
-class ShaderProgram;
-class Texture2D;
-
-namespace md2model
+namespace Raydelto::MD2Loader
 {
+    class ShaderProgram;
+    class Texture2D;
+
     struct header
     {
         int id;
@@ -89,7 +89,7 @@ namespace md2model
         float interpol;
         mesh *triIndx;
         textcoord *st;
-        md2model::vector *pointList;
+        Raydelto::MD2Loader::vector *pointList;
         float x, y, z;
         float nextX, nextY, nextZ;
         float radius;
@@ -98,17 +98,17 @@ namespace md2model
         float speed;
     };
 
-    class Md2
+    class MD2Model
     {
     public:
-        Md2(const char *md2FileName, const char *textureFileName);
-        ~Md2();
+        MD2Model(const char *md2FileName, const char *textureFileName);
+        ~MD2Model();
         // The frame parameter start at 0
         void Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection);
 
     private:
-        void LoadModel(char *md2FileName);
-        void LoadTexture(char *textureFileName);
+        void LoadModel(const char *md2FileName);
+        void LoadTexture(const char *textureFileName);
         void InitBuffer();
 
         std::unique_ptr<modData> m_model;
@@ -122,4 +122,4 @@ namespace md2model
         bool m_bufferInitialized;
         GLuint m_vbo;
     };
-} // namespace md2model
+}

@@ -9,6 +9,8 @@
 #define LOG_TAG "Md2"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
+using namespace Raydelto::MD2Loader;
+
 ShaderProgram::ShaderProgram()
 	: mHandle(0)
 {

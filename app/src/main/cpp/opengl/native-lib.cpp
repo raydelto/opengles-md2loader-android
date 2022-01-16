@@ -1,10 +1,8 @@
 #include <jni.h>
-#include <string>
-#include <stdio.h>
-#include <vector>
 #include "Renderer.h"
+#include <memory>
 
-static Renderer *pObject = new Renderer();
+static std::unique_ptr<Raydelto::MD2Loader::Renderer> pObject = std::make_unique<Raydelto::MD2Loader::Renderer>();
 
 extern "C" JNIEXPORT void JNICALL
 Java_org_raydelto_md2loader_MyRenderer_surfaceCreated(

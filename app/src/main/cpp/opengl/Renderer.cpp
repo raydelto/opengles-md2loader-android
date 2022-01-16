@@ -1,6 +1,7 @@
 #include "Renderer.h"
-#include "Md2.h"
 #include "glm/gtc/matrix_transform.hpp"
+
+using namespace Raydelto::MD2Loader;
 
 Renderer::Renderer()
 {
@@ -9,7 +10,7 @@ Renderer::Renderer()
 void Renderer::onSurfaceCreated()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    m_player = std::make_unique<md2model::Md2>("data/female.md2", "data/female.tga");
+    m_player = std::make_unique<MD2Model>("data/female.md2", "data/female.tga");
 
     // Create the projection matrix
     assert(m_height != 0);
