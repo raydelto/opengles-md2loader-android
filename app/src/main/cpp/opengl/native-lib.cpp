@@ -2,14 +2,14 @@
 #include "Renderer.h"
 #include <memory>
 
-static std::unique_ptr<Raydelto::MD2Loader::Renderer> pObject = std::make_unique<Raydelto::MD2Loader::Renderer>();
+static std::unique_ptr<Raydelto::MD2Loader::Renderer> pRenderer = std::make_unique<Raydelto::MD2Loader::Renderer>();
 
 extern "C" JNIEXPORT void JNICALL
 Java_org_raydelto_md2loader_MyRenderer_surfaceCreated(
     JNIEnv *env,
     jobject /* this */)
 {
-    pObject->onSurfaceCreated();
+    pRenderer->OnSurfaceCreated();
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -17,7 +17,7 @@ Java_org_raydelto_md2loader_MyRenderer_drawFrame(
     JNIEnv *env,
     jobject /* this */)
 {
-    pObject->onDrawFrame();
+    pRenderer->OnDrawFrame();
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -27,7 +27,7 @@ Java_org_raydelto_md2loader_MyRenderer_setScreenSize(
     jint width,
     jint height)
 {
-    pObject->setScreenSize(width, height);
+    pRenderer->SetScreenSize(width, height);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -37,7 +37,7 @@ Java_org_raydelto_md2loader_MyRenderer_setRotationAngles(
     jfloat x,
     jfloat y)
 {
-    pObject->setRotationAngles(x, y);
+    pRenderer->SetRotationAngles(x, y);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -46,5 +46,5 @@ Java_org_raydelto_md2loader_MyRenderer_setScale(
     jobject /* this */,
     jfloat scale)
 {
-    pObject->setScale(scale);
+    pRenderer->SetScale(scale);
 }

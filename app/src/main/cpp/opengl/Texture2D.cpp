@@ -5,8 +5,8 @@
 #include "stb_image/stb_image.h"
 #include "Logger.h"
 
-
 using namespace Raydelto::MD2Loader;
+using std::string;
 
 Texture2D::Texture2D()
 	: mTexture(0)
@@ -18,7 +18,7 @@ Texture2D::~Texture2D()
 	glDeleteTextures(1, &mTexture);
 }
 
-bool Texture2D::loadTexture(const string &fileName, bool generateMipMaps)
+bool Texture2D::LoadTexture(const string &fileName, bool generateMipMaps)
 {
 	int width, height, components;
 
@@ -40,7 +40,9 @@ bool Texture2D::loadTexture(const string &fileName, bool generateMipMaps)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
 
 	if (generateMipMaps)
+	{
 		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 
 	stbi_image_free(imageData);
 	// unbinding our texture
@@ -48,7 +50,7 @@ bool Texture2D::loadTexture(const string &fileName, bool generateMipMaps)
 	return true;
 }
 
-void Texture2D::bind(GLuint texUnit) const
+void Texture2D::Bind(GLuint texUnit) const
 {
 	assert(texUnit >= 0 && texUnit < 32);
 	glActiveTexture(GL_TEXTURE0 + texUnit);

@@ -18,7 +18,7 @@ MD2Model::MD2Model(const char *md2FileName, const char *textureFileName) : m_tex
 {
 	LoadTexture(TEXTURE_PATH("female.tga"));
 	LoadModel(TEXTURE_PATH("female.md2"));
-	m_shaderProgram->loadShaders(SHADER_PATH("basic.vert"), SHADER_PATH("basic.frag"));
+	m_shaderProgram->LoadShaders(SHADER_PATH("basic.vert"), SHADER_PATH("basic.frag"));
 	InitBuffer();
 }
 
@@ -34,31 +34,31 @@ void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float
 {
 	glEnable(GL_DEPTH_TEST);
 	assert(m_modelLoaded && m_textureLoaded && m_bufferInitialized);
-	m_texture->bind(0);
+	m_texture->Bind(0);
 	glm::mat4 model;
 
 	model = glm::translate(model, m_position) * glm::rotate(model, glm::radians(yAngle), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::rotate(model, glm::radians(xAngle), glm::vec3(1.0f, 0.0f, 0.0f)) * glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(model, glm::vec3(0.3 * scale, 0.3 * scale, 0.3 * scale));
 
-	m_shaderProgram->use();
-	m_shaderProgram->setUniform("model", model);
-	m_shaderProgram->setUniform("view", view);
-	m_shaderProgram->setUniform("projection", projection);
-	m_shaderProgram->setUniform("modelView", view * model);
+	m_shaderProgram->Use();
+	m_shaderProgram->SetUniform("model", model);
+	m_shaderProgram->SetUniform("view", view);
+	m_shaderProgram->SetUniform("projection", projection);
+	m_shaderProgram->SetUniform("modelView", view * model);
 
 	auto count = m_frameIndices[frame].second - m_frameIndices[frame].first + 1;
-	m_shaderProgram->setUniform("interpolation", interpolation);
+	m_shaderProgram->SetUniform("interpolation", interpolation);
 	glDrawArrays(GL_TRIANGLES, m_frameIndices[frame].first, count);
 }
 
 void MD2Model::LoadTexture(const char *textureFileName)
 {
-	m_texture->loadTexture(textureFileName, true);
+	m_texture->LoadTexture(textureFileName, true);
 	m_textureLoaded = true;
 }
 
 void MD2Model::InitBuffer()
 {
-	GLuint programId = m_shaderProgram->getProgram();
+	GLuint programId = m_shaderProgram->GetProgram();
 	GLuint pos, nextPos, texCoord;
 
 	pos = glGetAttribLocation(programId, "pos");

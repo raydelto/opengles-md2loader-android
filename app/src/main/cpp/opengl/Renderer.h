@@ -15,15 +15,15 @@ namespace Raydelto::MD2Loader
     public:
         Renderer();
 
-        void onSurfaceCreated();
+        void OnSurfaceCreated();
 
-        void onDrawFrame();
+        void OnDrawFrame();
 
-        void setScreenSize(int width, int height);
+        void SetScreenSize(int width, int height);
 
-        void setRotationAngles(float width, float height);
+        void SetRotationAngles(float width, float height);
 
-        void setScale(float scale);
+        void SetScale(float scale);
 
     private:
         std::unique_ptr<MD2Model> m_player;

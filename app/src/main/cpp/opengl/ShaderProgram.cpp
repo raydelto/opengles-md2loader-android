@@ -8,6 +8,7 @@
 #include "Logger.h"
 
 using namespace Raydelto::MD2Loader;
+using std::string;
 
 ShaderProgram::ShaderProgram()
 	: mHandle(0)
@@ -19,11 +20,11 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(mHandle);
 }
 
-bool ShaderProgram::loadShaders(const char *vsFilename, const char *fsFilename)
+bool ShaderProgram::LoadShaders(const char *vsFilename, const char *fsFilename)
 {
 
-	string vsString = fileToString(vsFilename);
-	string fsString = fileToString(fsFilename);
+	string vsString = FileToString(vsFilename);
+	string fsString = FileToString(fsFilename);
 	const GLchar *vsSourcePtr = vsString.c_str();
 	const GLchar *fsSourcePtr = fsString.c_str();
 
@@ -34,10 +35,10 @@ bool ShaderProgram::loadShaders(const char *vsFilename, const char *fsFilename)
 	glShaderSource(fs, 1, &fsSourcePtr, nullptr);
 
 	glCompileShader(vs);
-	checkCompileErrors(vs, ShaderType::VERTEX);
+	CheckCompileErrors(vs, ShaderType::VERTEX);
 
 	glCompileShader(fs);
-	checkCompileErrors(fs, ShaderType::FRAGMENT);
+	CheckCompileErrors(fs, ShaderType::FRAGMENT);
 
 	mHandle = glCreateProgram();
 	if (mHandle == 0)
@@ -50,7 +51,7 @@ bool ShaderProgram::loadShaders(const char *vsFilename, const char *fsFilename)
 	glAttachShader(mHandle, fs);
 
 	glLinkProgram(mHandle);
-	checkCompileErrors(mHandle, ShaderType::PROGRAM);
+	CheckCompileErrors(mHandle, ShaderType::PROGRAM);
 
 	glDeleteShader(vs);
 	glDeleteShader(fs);
@@ -59,7 +60,7 @@ bool ShaderProgram::loadShaders(const char *vsFilename, const char *fsFilename)
 	return true;
 }
 
-string ShaderProgram::fileToString(const string &filename)
+string ShaderProgram::FileToString(const string &filename)
 {
 	std::stringstream ss;
 	std::ifstream file;
@@ -84,13 +85,13 @@ string ShaderProgram::fileToString(const string &filename)
 	return ss.str();
 }
 
-void ShaderProgram::use() const
+void ShaderProgram::Use() const
 {
 	if (mHandle > 0)
 		glUseProgram(mHandle);
 }
 
-void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type)
+void ShaderProgram::CheckCompileErrors(GLuint shader, ShaderType type)
 {
 	int status = 0;
 
@@ -124,42 +125,42 @@ void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type)
 	}
 }
 
-GLuint ShaderProgram::getProgram() const
+GLuint ShaderProgram::GetProgram() const
 {
 	return mHandle;
 }
 
-void ShaderProgram::setUniform(const GLchar *name, const float &f)
+void ShaderProgram::SetUniform(const GLchar *name, const float &f)
 {
-	GLint loc = getUniformLocation(name);
+	GLint loc = GetUniformLocation(name);
 	glUniform1f(loc, f);
 }
 
-void ShaderProgram::setUniform(const GLchar *name, const glm::vec2 &v)
+void ShaderProgram::SetUniform(const GLchar *name, const glm::vec2 &v)
 {
-	GLint loc = getUniformLocation(name);
+	GLint loc = GetUniformLocation(name);
 	glUniform2f(loc, v.x, v.y);
 }
 
-void ShaderProgram::setUniform(const GLchar *name, const glm::vec3 &v)
+void ShaderProgram::SetUniform(const GLchar *name, const glm::vec3 &v)
 {
-	GLint loc = getUniformLocation(name);
+	GLint loc = GetUniformLocation(name);
 	glUniform3f(loc, v.x, v.y, v.z);
 }
 
-void ShaderProgram::setUniform(const GLchar *name, const glm::vec4 &v)
+void ShaderProgram::SetUniform(const GLchar *name, const glm::vec4 &v)
 {
-	GLint loc = getUniformLocation(name);
+	GLint loc = GetUniformLocation(name);
 	glUniform4f(loc, v.x, v.y, v.z, v.w);
 }
 
-void ShaderProgram::setUniform(const GLchar *name, const glm::mat4 &m)
+void ShaderProgram::SetUniform(const GLchar *name, const glm::mat4 &m)
 {
-	GLint loc = getUniformLocation(name);
+	GLint loc = GetUniformLocation(name);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(m));
 }
 
-GLint ShaderProgram::getUniformLocation(const GLchar *name)
+GLint ShaderProgram::GetUniformLocation(const GLchar *name)
 {
 	auto it = mUniformLocations.find(name);
 

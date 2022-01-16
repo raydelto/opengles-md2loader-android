@@ -1,12 +1,11 @@
 #pragma once
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
 #include "glm/glm.hpp"
-using std::string;
 
 namespace Raydelto::MD2Loader
 {
@@ -16,18 +15,18 @@ namespace Raydelto::MD2Loader
 		ShaderProgram();
 		~ShaderProgram();
 
-		bool loadShaders(const char *vsFilename, const char *fsFilename);
-		void use() const;
+		bool LoadShaders(const char *vsFilename, const char *fsFilename);
+		void Use() const;
 
-		GLuint getProgram() const;
+		GLuint GetProgram() const;
 
-		void setUniform(const GLchar *name, const float &f);
-		void setUniform(const GLchar *name, const glm::vec2 &v);
-		void setUniform(const GLchar *name, const glm::vec3 &v);
-		void setUniform(const GLchar *name, const glm::vec4 &v);
-		void setUniform(const GLchar *name, const glm::mat4 &m);
+		void SetUniform(const GLchar *name, const float &f);
+		void SetUniform(const GLchar *name, const glm::vec2 &v);
+		void SetUniform(const GLchar *name, const glm::vec3 &v);
+		void SetUniform(const GLchar *name, const glm::vec4 &v);
+		void SetUniform(const GLchar *name, const glm::mat4 &m);
 
-		GLint getUniformLocation(const GLchar *name);
+		GLint GetUniformLocation(const GLchar *name);
 
 	private:
 		enum class ShaderType
@@ -37,10 +36,10 @@ namespace Raydelto::MD2Loader
 			PROGRAM
 		};
 
-		string fileToString(const string &filename);
-		void checkCompileErrors(GLuint shader, ShaderType type);
+		std::string FileToString(const std::string &filename);
+		void CheckCompileErrors(GLuint shader, ShaderType type);
 
 		GLuint mHandle;
-		std::map<string, GLint> mUniformLocations;
+		std::unordered_map<std::string, GLint> mUniformLocations;
 	};
 }

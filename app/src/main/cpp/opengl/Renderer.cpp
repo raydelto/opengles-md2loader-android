@@ -5,7 +5,7 @@ using namespace Raydelto::MD2Loader;
 
 Renderer::Renderer() = default;
 
-void Renderer::onSurfaceCreated()
+void Renderer::OnSurfaceCreated()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     m_player = std::make_unique<MD2Model>("data/female.md2", "data/female.tga");
@@ -22,7 +22,7 @@ void Renderer::onSurfaceCreated()
     m_view = glm::lookAt(m_camPos, m_camPos + m_targetPos, m_up);
 }
 
-void Renderer::onDrawFrame()
+void Renderer::OnDrawFrame()
 {
     static const int START_FRAME = 0;
     static const int END_FRAME = 197;
@@ -47,19 +47,19 @@ void Renderer::onDrawFrame()
     m_interpolation += 0.1f;
 }
 
-void Renderer::setScreenSize(int width, int height)
+void Renderer::SetScreenSize(int width, int height)
 {
     m_width = width;
     m_height = height;
 }
 
-void Renderer::setRotationAngles(float x, float y)
+void Renderer::SetRotationAngles(float x, float y)
 {
     m_rotationX = x;
     m_rotationY = y;
 }
 
-void Renderer::setScale(float scale)
+void Renderer::SetScale(float scale)
 {
     m_scale = scale;
 }
