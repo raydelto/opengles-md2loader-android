@@ -25,7 +25,7 @@ void Renderer::OnSurfaceCreated()
 void Renderer::OnDrawFrame()
 {
     static const int START_FRAME = 0;
-    static const int END_FRAME = 197;
+    static const int END_FRAME = m_player->GetEndFrame();
 
     m_xAngle += m_rotationX;
     m_yAngle -= m_rotationY;

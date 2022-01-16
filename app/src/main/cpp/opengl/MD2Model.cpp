@@ -56,6 +56,11 @@ void MD2Model::LoadTexture(const char *textureFileName)
 	m_textureLoaded = true;
 }
 
+size_t MD2Model::GetEndFrame()
+{
+	return m_model->numFrames - 1;
+}
+
 void MD2Model::InitBuffer()
 {
 	GLuint programId = m_shaderProgram->GetProgram();
@@ -65,7 +70,7 @@ void MD2Model::InitBuffer()
 
 	std::vector<float> md2Vertices;
 	size_t startFrame = 0;
-	size_t endFrame = m_model->numFrames - 1;
+	size_t endFrame = GetEndFrame();
 	Raydelto::MD2Loader::vector *currentFrame;
 	Raydelto::MD2Loader::vector *nextFrame;
 	m_model->currentFrame = startFrame;
