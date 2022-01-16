@@ -9,7 +9,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 namespace Raydelto::MD2Loader
@@ -116,7 +116,7 @@ namespace Raydelto::MD2Loader
         std::unique_ptr<Texture2D> m_texture;
         std::vector<GLuint> m_vboIndices;
         std::unique_ptr<ShaderProgram> m_shaderProgram;
-        std::map<int, std::pair<int, int>> m_frameIndices;
+        std::unordered_map<int, std::pair<int, int>> m_frameIndices;
         glm::vec3 m_position;
         bool m_modelLoaded;
         bool m_textureLoaded;
