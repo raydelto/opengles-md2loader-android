@@ -2,12 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <android/log.h>
 
 #include "glm/gtc/type_ptr.hpp"
 
-#define LOG_TAG "Md2"
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#include "Logger.h"
 
 using namespace Raydelto::MD2Loader;
 
