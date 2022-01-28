@@ -10,14 +10,10 @@ namespace Raydelto::MD2Loader
 	public:
 		Texture2D();
 		virtual ~Texture2D();
-
 		bool LoadTexture(const std::string &fileName, bool generateMipMaps = true);
 		void Bind(GLuint texUnit = 0) const;
 
 	private:
-		Texture2D(const Texture2D &rhs) = default;
-		Texture2D &operator=(const Texture2D &rhs) = default;
-
 		GLuint mTexture;
 	};
 }

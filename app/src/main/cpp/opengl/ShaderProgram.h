@@ -18,8 +18,6 @@ namespace Raydelto::MD2Loader
 		bool LoadShaders(const char *vsFilename, const char *fsFilename);
 		void Use() const;
 
-		GLuint GetProgram() const;
-
 		void SetUniform(const GLchar *name, const float &f);
 		void SetUniform(const GLchar *name, const glm::vec2 &v);
 		void SetUniform(const GLchar *name, const glm::vec3 &v);
@@ -27,6 +25,7 @@ namespace Raydelto::MD2Loader
 		void SetUniform(const GLchar *name, const glm::mat4 &m);
 
 		GLint GetUniformLocation(const GLchar *name);
+		GLuint GetProgram() const;
 
 	private:
 		enum class ShaderType

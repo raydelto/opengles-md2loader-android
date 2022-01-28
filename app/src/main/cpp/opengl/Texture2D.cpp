@@ -20,7 +20,9 @@ Texture2D::~Texture2D()
 
 bool Texture2D::LoadTexture(const string &fileName, bool generateMipMaps)
 {
-	int width, height, components;
+	int width;
+	int height;
+	int components;
 
 	// Use stbi image library to load our image
 	unsigned char *imageData = stbi_load(fileName.c_str(), &width, &height, &components, STBI_rgb_alpha);

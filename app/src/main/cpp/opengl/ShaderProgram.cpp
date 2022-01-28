@@ -71,7 +71,6 @@ string ShaderProgram::FileToString(const string &filename)
 
 		if (!file.fail())
 		{
-			// Using a std::stringstream is easier than looping through each line of the file
 			ss << file.rdbuf();
 		}
 
@@ -88,7 +87,9 @@ string ShaderProgram::FileToString(const string &filename)
 void ShaderProgram::Use() const
 {
 	if (mHandle > 0)
+	{
 		glUseProgram(mHandle);
+	}
 }
 
 void ShaderProgram::CheckCompileErrors(GLuint shader, ShaderType type)
@@ -164,13 +165,10 @@ GLint ShaderProgram::GetUniformLocation(const GLchar *name)
 {
 	auto it = mUniformLocations.find(name);
 
-	// Only need to query the shader program IF it doesn't already exist.
 	if (it == mUniformLocations.end())
 	{
-		// Find it and add it to the map
 		mUniformLocations[name] = glGetUniformLocation(mHandle, name);
 	}
 
-	// Return it
 	return mUniformLocations[name];
 }
