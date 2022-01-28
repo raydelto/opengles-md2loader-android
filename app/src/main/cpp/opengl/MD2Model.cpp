@@ -30,7 +30,7 @@ MD2Model::~MD2Model()
 	}
 }
 
-void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection)
+void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 &view, glm::mat4 &projection)
 {
 	glEnable(GL_DEPTH_TEST);
 	assert(m_modelLoaded && m_textureLoaded && m_bufferInitialized);

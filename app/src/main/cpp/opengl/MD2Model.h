@@ -104,7 +104,7 @@ namespace Raydelto::MD2Loader
         MD2Model(const char *md2FileName, const char *textureFileName);
         ~MD2Model();
         // The frame parameter start at 0
-        void Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 view, glm::mat4 projection);
+        void Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 &view, glm::mat4 &projection);
         size_t GetEndFrame();
 
     private:
