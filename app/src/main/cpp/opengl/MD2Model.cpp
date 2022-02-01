@@ -5,21 +5,29 @@
 
 using namespace Raydelto::MD2Loader;
 
-#define BASE_ASSET_PATH "/data/user/0/org.raydelto.md2loader/files/"
-#define TEXTURE_PATH(name) BASE_ASSET_PATH name
-#define SHADER_PATH(name) BASE_ASSET_PATH name
+static const std::string BASE_PATH = "/data/user/0/org.raydelto.md2loader/files/";
+
 
 MD2Model::MD2Model(const char *md2FileName, const char *textureFileName) : m_texture(std::make_unique<Texture2D>()),
 																		   m_shaderProgram(std::make_unique<ShaderProgram>()),
 																		   m_position(glm::vec3(0.0f, 0.0f, -25.0f)),
 																		   m_modelLoaded(false),
 																		   m_textureLoaded(false),
-																		   m_bufferInitialized(false)
+																		   m_bufferInitialized(false),
+																		   m_posAttrib(NULL),
+																		   m_nextPosAttrib(NULL),
+																		   m_texCoordAttrib(NULL)
 {
-	LoadTexture(TEXTURE_PATH("female.tga"));
-	LoadModel(TEXTURE_PATH("female.md2"));
-	m_shaderProgram->LoadShaders(SHADER_PATH("basic.vert"), SHADER_PATH("basic.frag"));
+	LoadTexture(BASE_PATH + std::string(textureFileName));
+	LoadModel(BASE_PATH + std::string(md2FileName));
+	m_shaderProgram->LoadShaders(BASE_PATH  + "basic.vert", BASE_PATH + "basic.frag");
 	InitBuffer();
+}
+
+
+void MD2Model::SetPosition(float x, float y, float z)
+{
+    m_position = glm::vec3(x,y,z);
 }
 
 MD2Model::~MD2Model()
@@ -30,7 +38,7 @@ MD2Model::~MD2Model()
 	}
 }
 
-void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 &view, glm::mat4 &projection)
+void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, const glm::mat4 &view, const glm::mat4 &projection)
 {
 	glEnable(GL_DEPTH_TEST);
 	assert(m_modelLoaded && m_textureLoaded && m_bufferInitialized);
@@ -47,10 +55,16 @@ void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float
 
 	auto count = m_frameIndices[frame].second - m_frameIndices[frame].first + 1;
 	m_shaderProgram->SetUniform("interpolation", interpolation);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+	glVertexAttribPointer(m_posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(0));
+	glVertexAttribPointer(m_nextPosAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(m_texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(6 * sizeof(GLfloat)));
 	glDrawArrays(GL_TRIANGLES, m_frameIndices[frame].first, count);
+	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 }
 
-void MD2Model::LoadTexture(const char *textureFileName)
+void MD2Model::LoadTexture(std::string textureFileName)
 {
 	m_texture->LoadTexture(textureFileName, true);
 	m_textureLoaded = true;
@@ -63,10 +77,9 @@ size_t MD2Model::GetEndFrame()
 
 void MD2Model::InitBuffer()
 {
-	GLuint programId = m_shaderProgram->GetProgram();
-	GLuint pos = glGetAttribLocation(programId, "pos");
-	GLuint nextPos = glGetAttribLocation(programId, "nextPos");
-	GLuint texCoord = glGetAttribLocation(programId, "texCoord");
+	m_posAttrib = glGetAttribLocation( m_shaderProgram->GetProgram(), "pos");
+	m_nextPosAttrib = glGetAttribLocation( m_shaderProgram->GetProgram(), "nextPos");
+	m_texCoordAttrib = glGetAttribLocation( m_shaderProgram->GetProgram(), "texCoord");
 
 	std::vector<float> md2Vertices;
 	size_t startFrame = 0;
@@ -124,21 +137,22 @@ void MD2Model::InitBuffer()
 	glBufferData(GL_ARRAY_BUFFER, count * sizeof(float) * 8 * m_model->numFrames, &md2Vertices[m_frameIndices[frameIndex].first * 8], GL_STATIC_DRAW); // copy the data from CPU to GPU
 
 	// Current Frame Position attribute
-	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(0));
-	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(m_posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(0));
+	glEnableVertexAttribArray(m_posAttrib);
 
 	// Next  Frame Position attribute
-	glVertexAttribPointer(nextPos, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(nextPos);
+	glVertexAttribPointer(m_nextPosAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(m_nextPosAttrib);
 
 	// Texture Coord attribute
-	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(texCoord);
+	glVertexAttribPointer(m_texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(m_texCoordAttrib);
 	m_vboIndices.emplace_back(m_vbo);
 	m_bufferInitialized = true;
+	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 }
 
-void MD2Model::LoadModel(const char *md2FileName)
+void MD2Model::LoadModel(std::string md2FileName)
 {
 	FILE *fp;
 	size_t length;
@@ -152,18 +166,18 @@ void MD2Model::LoadModel(const char *md2FileName)
 	Raydelto::MD2Loader::vector *pointList;
 	mesh *bufIndexPtr;
 
-	fp = fopen(md2FileName, "rb");
+	fp = fopen(md2FileName.c_str(), "rb");
 	fseek(fp, 0, SEEK_END);
 	length = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	buffer = (char *)malloc(length + 1);
+	buffer = reinterpret_cast<char*>(malloc(length + 1));
 	fread(buffer, sizeof(char), length, fp);
 
-	head = (header *)buffer;
-	m_model.reset((modData *)malloc(sizeof(modData)));
+	head = reinterpret_cast<header*>(buffer);
+	m_model.reset(reinterpret_cast<modData*>(malloc(sizeof(modData))));
 
-	m_model->pointList = (Raydelto::MD2Loader::vector *)malloc(sizeof(Raydelto::MD2Loader::vector) * head->vNum * head->Number_Of_Frames);
+	m_model->pointList = reinterpret_cast<Raydelto::MD2Loader::vector*>(malloc(sizeof(Raydelto::MD2Loader::vector) * head->vNum * head->Number_Of_Frames));
 	m_model->numPoints = head->vNum;
 	m_model->numFrames = head->Number_Of_Frames;
 	m_model->frameSize = head->framesize;
@@ -180,7 +194,7 @@ void MD2Model::LoadModel(const char *md2FileName)
 		}
 	}
 
-	m_model->st = (textcoord *)malloc(sizeof(textcoord) * head->tNum);
+	m_model->st = reinterpret_cast<textcoord*>(malloc(sizeof(textcoord) * head->tNum));
 	m_model->numST = head->tNum;
 	stPtr = (textindx *)&buffer[head->offsetTCoord];
 
@@ -190,7 +204,7 @@ void MD2Model::LoadModel(const char *md2FileName)
 		m_model->st[count].t = static_cast<float>(stPtr[count].t) / static_cast<float>(head->theight);
 	}
 
-	m_model->triIndx = (mesh *)malloc(sizeof(mesh) * head->fNum);
+	m_model->triIndx = reinterpret_cast<mesh*>(malloc(sizeof(mesh) * head->fNum));
 	m_model->numTriangles = head->fNum;
 	bufIndexPtr = (mesh *)&buffer[head->offsetIndx];
 

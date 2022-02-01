@@ -8,7 +8,12 @@ Renderer::Renderer() = default;
 void Renderer::OnSurfaceCreated()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    m_player = std::make_unique<MD2Model>("data/female.md2", "data/female.tga");
+
+    m_player = std::make_unique<MD2Model>("female.md2", "female.tga");
+    m_player2 = std::make_unique<MD2Model>("grunt.md2", "grunt.tga");
+    m_player2->SetPosition(0.0f, 6.5f, -25.0f);
+
+
 
     // Create the projection matrix
     assert(m_height != 0);
@@ -32,6 +37,7 @@ void Renderer::OnDrawFrame()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_player->Draw(m_renderFrame, m_xAngle, m_yAngle, m_scale, m_interpolation, m_view, m_projection);
+    m_player2->Draw(m_renderFrame, m_xAngle, m_yAngle, m_scale, m_interpolation, m_view, m_projection);
     if (m_interpolation >= 1.0f)
     {
         m_interpolation = 0.0f;

@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         glSurfaceView.setEGLContextClientVersion(2)
 
         assetsDirectory = applicationContext.filesDir.path + "/"
-        val assets: List<String> = listOf("female.md2", "female.tga", "basic.vert", "basic.frag")
+        val assets: List<String> = listOf("female.md2", "female.tga","grunt.md2", "grunt.tga",  "basic.vert", "basic.frag")
 
         for (asset in assets) {
             extractAsset(asset)

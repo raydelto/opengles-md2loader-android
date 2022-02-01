@@ -15,7 +15,7 @@ namespace Raydelto::MD2Loader
 		ShaderProgram();
 		~ShaderProgram();
 
-		bool LoadShaders(const char *vsFilename, const char *fsFilename);
+		bool LoadShaders(std::string vsFilename, std::string fsFilename);
 		void Use() const;
 
 		void SetUniform(const GLchar *name, const float &f);

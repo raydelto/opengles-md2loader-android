@@ -104,12 +104,13 @@ namespace Raydelto::MD2Loader
         MD2Model(const char *md2FileName, const char *textureFileName);
         ~MD2Model();
         // The frame parameter start at 0
-        void Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, glm::mat4 &view, glm::mat4 &projection);
+        void Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, const glm::mat4 &view, const glm::mat4 &projection);
         size_t GetEndFrame();
+        void SetPosition(float x, float y, float z);
 
     private:
-        void LoadModel(const char *md2FileName);
-        void LoadTexture(const char *textureFileName);
+        void LoadModel(std::string md2FileName);
+        void LoadTexture(std::string textureFileName);
         void InitBuffer();
 
         std::unique_ptr<modData> m_model;
@@ -122,5 +123,8 @@ namespace Raydelto::MD2Loader
         bool m_textureLoaded;
         bool m_bufferInitialized;
         GLuint m_vbo;
+        GLuint m_posAttrib;
+        GLuint m_nextPosAttrib;
+        GLuint m_texCoordAttrib;
     };
 }

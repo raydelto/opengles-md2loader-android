@@ -27,6 +27,7 @@ namespace Raydelto::MD2Loader
 
     private:
         std::unique_ptr<MD2Model> m_player;
+        std::unique_ptr<MD2Model> m_player2;
         glm::mat4 m_view;
         glm::mat4 m_projection;
         glm::vec3 m_camPos;

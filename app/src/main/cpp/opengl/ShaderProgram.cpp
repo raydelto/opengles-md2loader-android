@@ -20,11 +20,11 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(mHandle);
 }
 
-bool ShaderProgram::LoadShaders(const char *vsFilename, const char *fsFilename)
+bool ShaderProgram::LoadShaders(std::string vsFilename, std::string fsFilename)
 {
 
-	string vsString = FileToString(vsFilename);
-	string fsString = FileToString(fsFilename);
+	string vsString = FileToString(vsFilename.c_str());
+	string fsString = FileToString(fsFilename.c_str());
 	const GLchar *vsSourcePtr = vsString.c_str();
 	const GLchar *fsSourcePtr = fsString.c_str();
 
