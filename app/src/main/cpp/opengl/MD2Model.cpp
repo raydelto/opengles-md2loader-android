@@ -1,7 +1,6 @@
 #include "MD2Model.h"
 #include "ShaderProgram.h"
 #include "Texture2D.h"
-#include <jni.h>
 
 using namespace Raydelto::MD2Loader;
 
