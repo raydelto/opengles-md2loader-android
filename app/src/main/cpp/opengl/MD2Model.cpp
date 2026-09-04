@@ -4,8 +4,21 @@
 
 using namespace Raydelto::MD2Loader;
 
-static const std::string BASE_PATH = "/data/user/0/org.raydelto.md2loader/files/";
+#if defined(__ANDROID__)
+static std::string s_basePath = "/data/user/0/org.raydelto.md2loader/files/";
+#else
+static std::string s_basePath = "";
+#endif
 
+void MD2Model::SetBasePath(const std::string &path)
+{
+	s_basePath = path;
+}
+
+std::string MD2Model::GetBasePath()
+{
+	return s_basePath;
+}
 
 MD2Model::MD2Model(const char *md2FileName, const char *textureFileName) : m_texture(std::make_unique<Texture2D>()),
 																		   m_shaderProgram(std::make_unique<ShaderProgram>()),
@@ -17,9 +30,9 @@ MD2Model::MD2Model(const char *md2FileName, const char *textureFileName) : m_tex
 																		   m_nextPosAttrib(NULL),
 																		   m_texCoordAttrib(NULL)
 {
-	LoadTexture(BASE_PATH + std::string(textureFileName));
-	LoadModel(BASE_PATH + std::string(md2FileName));
-	m_shaderProgram->LoadShaders(BASE_PATH  + "basic.vert", BASE_PATH + "basic.frag");
+	LoadTexture(s_basePath + std::string(textureFileName));
+	LoadModel(s_basePath + std::string(md2FileName));
+	m_shaderProgram->LoadShaders(s_basePath  + "basic.vert", s_basePath + "basic.frag");
 	InitBuffer();
 }
 
@@ -42,7 +55,7 @@ void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float
 	glEnable(GL_DEPTH_TEST);
 	assert(m_modelLoaded && m_textureLoaded && m_bufferInitialized);
 	m_texture->Bind(0);
-	glm::mat4 model;
+	glm::mat4 model(1.0f);
 
 	model = glm::translate(model, m_position) * glm::rotate(model, glm::radians(yAngle), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::rotate(model, glm::radians(xAngle), glm::vec3(1.0f, 0.0f, 0.0f)) * glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::scale(model, glm::vec3(0.3 * scale, 0.3 * scale, 0.3 * scale));
 
@@ -57,16 +70,29 @@ void MD2Model::Draw(size_t frame, float xAngle, float yAngle, float scale, float
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glVertexAttribPointer(m_posAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(0));
+	glEnableVertexAttribArray(m_posAttrib);
 	glVertexAttribPointer(m_nextPosAttrib, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(m_nextPosAttrib);
 	glVertexAttribPointer(m_texCoordAttrib, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(m_texCoordAttrib);
+
+	GLint texLoc = glGetUniformLocation(m_shaderProgram->GetProgram(), "texSampler1");
+	if (texLoc >= 0)
+	{
+		glUniform1i(texLoc, 0);
+	}
+
 	glDrawArrays(GL_TRIANGLES, m_frameIndices[frame].first, count);
 	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 }
 
 void MD2Model::LoadTexture(std::string textureFileName)
 {
-	m_texture->LoadTexture(textureFileName, true);
-	m_textureLoaded = true;
+	m_textureLoaded = m_texture->LoadTexture(textureFileName, true);
+	if (!m_textureLoaded)
+	{
+		printf("[MD2Loader] Failed to load texture: %s\n", textureFileName.c_str());
+	}
 }
 
 size_t MD2Model::GetEndFrame()
@@ -166,6 +192,11 @@ void MD2Model::LoadModel(std::string md2FileName)
 	mesh *bufIndexPtr;
 
 	fp = fopen(md2FileName.c_str(), "rb");
+	if (!fp)
+	{
+		printf("[MD2Loader] Failed to open MD2 model file: %s\n", md2FileName.c_str());
+		return;
+	}
 	fseek(fp, 0, SEEK_END);
 	length = ftell(fp);
 	fseek(fp, 0, SEEK_SET);

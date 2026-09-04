@@ -1,7 +1,12 @@
 #pragma once
 
+#if defined(__APPLE__)
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#else
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#endif
 
 #include <cstdio>
 #include <cstdlib>
@@ -107,6 +112,8 @@ namespace Raydelto::MD2Loader
         void Draw(size_t frame, float xAngle, float yAngle, float scale, float interpolation, const glm::mat4 &view, const glm::mat4 &projection);
         size_t GetEndFrame();
         void SetPosition(float x, float y, float z);
+        static void SetBasePath(const std::string &path);
+        static std::string GetBasePath();
 
     private:
         void LoadModel(std::string md2FileName);

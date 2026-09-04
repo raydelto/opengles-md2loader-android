@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 app/release
+xcuserdata/
+*.xcuserdata

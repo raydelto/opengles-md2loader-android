@@ -1,11 +1,17 @@
 #pragma once
 
+#if defined(__APPLE__)
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#else
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#endif
 #include <math.h>
 #include "glm/glm.hpp"
 #include "MD2Model.h"
 #include <memory>
+#include <string>
 
 namespace Raydelto::MD2Loader
 {
@@ -23,6 +29,8 @@ namespace Raydelto::MD2Loader
         void SetRotationAngles(float width, float height);
 
         void SetScale(float scale);
+
+        void SetAssetPath(const std::string &path);
 
     private:
         std::unique_ptr<MD2Model> m_player;

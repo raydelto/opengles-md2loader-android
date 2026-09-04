@@ -25,6 +25,18 @@ bool ShaderProgram::LoadShaders(std::string vsFilename, std::string fsFilename)
 
 	string vsString = FileToString(vsFilename.c_str());
 	string fsString = FileToString(fsFilename.c_str());
+
+	if (vsString.empty())
+	{
+		LOGE("Vertex shader source is empty: %s", vsFilename.c_str());
+		return false;
+	}
+	if (fsString.empty())
+	{
+		LOGE("Fragment shader source is empty: %s", fsFilename.c_str());
+		return false;
+	}
+
 	const GLchar *vsSourcePtr = vsString.c_str();
 	const GLchar *fsSourcePtr = fsString.c_str();
 

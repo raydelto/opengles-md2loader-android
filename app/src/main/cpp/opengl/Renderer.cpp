@@ -7,17 +7,14 @@ Renderer::Renderer() = default;
 
 void Renderer::OnSurfaceCreated()
 {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.15f, 0.15f, 0.25f, 1.0f);
 
     m_player = std::make_unique<MD2Model>("female.md2", "female.tga");
     m_player2 = std::make_unique<MD2Model>("grunt.md2", "grunt.tga");
     m_player2->SetPosition(0.0f, 6.5f, -25.0f);
 
-
-
     // Create the projection matrix
-    assert(m_height != 0);
-    float aspectRatio = static_cast<float>(m_width) / static_cast<float>(m_height);
+    float aspectRatio = (m_height > 0) ? (static_cast<float>(m_width) / static_cast<float>(m_height)) : 1.0f;
     m_projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
     m_camPos = glm::vec3(0.0f, 0.0f, 0.0f);
     m_targetPos = glm::vec3(0.0f, 0.0f, -20.0f);
@@ -57,6 +54,11 @@ void Renderer::SetScreenSize(int width, int height)
 {
     m_width = width;
     m_height = height;
+    if (m_height > 0)
+    {
+        float aspectRatio = static_cast<float>(m_width) / static_cast<float>(m_height);
+        m_projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
+    }
 }
 
 void Renderer::SetRotationAngles(float x, float y)
@@ -68,4 +70,9 @@ void Renderer::SetRotationAngles(float x, float y)
 void Renderer::SetScale(float scale)
 {
     m_scale = scale;
+}
+
+void Renderer::SetAssetPath(const std::string &path)
+{
+    MD2Model::SetBasePath(path);
 }
